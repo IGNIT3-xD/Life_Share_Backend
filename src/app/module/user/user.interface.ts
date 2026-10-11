@@ -51,6 +51,7 @@ export interface IRequesterQuery {
 	search?: string;
 	blood_group?: BloodGroup;
 	urgency?: RequestUrgency;
+	verificationStatus?: VerificationStatus;
 	sortBy?: SortOrder;
 	rawPage?: number;
 	rawLimit?: number;

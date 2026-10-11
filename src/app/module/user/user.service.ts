@@ -55,12 +55,72 @@ const makeBloodRequestService = async (
 			urgency: payload.urgency,
 			note: payload.note,
 		},
-		include: {
-			user: { omit: { password: true } },
-		},
+		// include: {
+		// 	user: { omit: { password: true } },
+		// },
 	});
 
 	return bloodRequest;
+};
+
+const getMyBloodRequestService = async (query: IRequesterQuery, id: string) => {
+	const {
+		search,
+		blood_group,
+		urgency,
+		sortBy = "desc",
+		verificationStatus,
+		rawPage = 1,
+		rawLimit = 10,
+	} = query;
+
+	const page = Math.max(1, Number(rawPage));
+	const limit = Math.min(Math.max(1, Number(rawLimit)), 100);
+
+	const where: Record<string, unknown> = {
+		user_id: id
+	};
+
+	if (search) {
+		where.OR = [
+			{ patientName: { contains: search, mode: "insensitive" } },
+			{ exact_location: { contains: search, mode: "insensitive" } },
+		];
+	}
+
+	if (blood_group) {
+		where.blood_group = blood_group;
+	}
+
+	if (urgency) {
+		where.urgency = urgency;
+	}
+
+	if (verificationStatus) {
+		where.verificationStatus = verificationStatus
+	}
+
+	const skip = (page - 1) * limit;
+
+	const [requester, total] = await Promise.all([
+		prisma.requester.findMany({
+			where,
+			skip,
+			take: limit,
+			orderBy: { created_at: sortBy },
+		}),
+		prisma.requester.count({ where }),
+	]);
+
+	return {
+		requester,
+		meta: {
+			total,
+			page,
+			limit,
+			totalPages: Math.ceil(total / limit),
+		},
+	};
 };
 
 const getAllRequestersService = async (query: IRequesterQuery) => {
@@ -458,6 +518,7 @@ const getAllRequesterAdmin = async (query: IRequesterQueryAdmin) => {
 export const UserService = {
 	getMeService,
 	makeBloodRequestService,
+	getMyBloodRequestService,
 	getAllRequestersService,
 	getMyRequestDetailsService,
 	updateMyRequestService,

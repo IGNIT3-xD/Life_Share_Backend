@@ -21,6 +21,12 @@ userRouter.post(
 	UserController.makeBloodRequestController,
 );
 
+userRouter.get(
+	"/my-blood-request",
+	auth(Role.SUPER_ADMIN, Role.ADMIN, Role.DONOR, Role.HOSPITAL, Role.USER),
+	UserController.getMyBloodRequestController,
+);
+
 userRouter.get("/requester", UserController.getAllRequesterController);
 
 userRouter.get(

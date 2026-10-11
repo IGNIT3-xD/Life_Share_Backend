@@ -32,6 +32,19 @@ const makeBloodRequestController = catchAsync(
 	},
 );
 
+const getMyBloodRequestController = catchAsync(async (req: Request, res: Response) => {
+	const id = req.user?.userId as string;
+
+	const result = await UserService.getMyBloodRequestService(req.query, id);
+
+	sendResponse(res, {
+		statusCode: 200,
+		success: true,
+		message: "My blood request retrieved successfully.",
+		data: result,
+	});
+})
+
 const getAllRequesterController = catchAsync(
 	async (req: Request, res: Response) => {
 		const result = await UserService.getAllRequestersService(req.query);
@@ -186,6 +199,7 @@ const getAllRequesterAdminController = catchAsync(
 export const UserController = {
 	getMeController,
 	makeBloodRequestController,
+	getMyBloodRequestController,
 	getAllRequesterController,
 	getMyRequestDetailsController,
 	updateMyRequestController,

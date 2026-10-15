@@ -12,6 +12,7 @@ export interface IDonorQuery {
 	search?: string;
 	blood_group?: BloodGroup;
 	availability?: DonorAvailability;
+	donationStatus?: DonationStatus;
 	location?: string;
 	sortBy?: SortOrder;
 	rawPage?: number;

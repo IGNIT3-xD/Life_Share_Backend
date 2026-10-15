@@ -21,6 +21,7 @@ const getMyDonationRequestController = catchAsync(
 	async (req: Request, res: Response) => {
 		const result = await DonationService.getMyDonationRequestService(
 			req.user as IUser,
+			req.query
 		);
 
 		sendResponse(res, {

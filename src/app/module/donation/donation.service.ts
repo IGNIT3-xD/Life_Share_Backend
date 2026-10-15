@@ -10,6 +10,7 @@ import AppError from "../../utils/AppError";
 import type { IDonation } from "./donation.interface";
 import type { IUser } from "../auth/auth.interface";
 import { validateUserById } from "../../utils/isUserExist";
+import { IDonorQuery } from "../donor/donor.interface";
 
 const createDonationService = async (payload: IDonation) => {
 	const { donor_id, requester_id, scheduled_at } = payload;
@@ -82,26 +83,67 @@ const createDonationService = async (payload: IDonation) => {
 	return donation;
 };
 
-const getMyDonationRequestService = async (user: IUser) => {
+const getMyDonationRequestService = async (user: IUser, query: IDonorQuery) => {
 	const userData = await validateUserById(user.userId);
 
-	const donationRequest = await prisma.donation.findMany({
-		where: {
-			requester: {
-				user_id: userData.id,
+	const { search, blood_group, donationStatus, sortBy = 'desc', rawPage = 1, rawLimit = 10 } = query
+
+	const page = Math.max(1, Number(rawPage));
+	const limit = Math.min(Math.max(1, Number(rawLimit)), 100);
+
+	const where: Record<string, unknown> = {
+		requester: {
+			user_id: userData.id,
+		},
+	}
+
+	if (search) {
+		where.OR = [
+			{ requester: { patientName: { contains: search, mode: 'insensitive' } } },
+			{ donor: { email: { contains: search, mode: 'insensitive' } } },
+		]
+	}
+
+	if (blood_group) {
+		where.requester = {
+			...(where.requester || {}),
+			blood_group: blood_group,
+		};
+	}
+
+	if (donationStatus) {
+		where.donationStatus = donationStatus
+	}
+
+	const skip = (page - 1) * limit;
+
+	const [donationRequest, total] = await Promise.all([
+		prisma.donation.findMany({
+			where,
+			skip,
+			take: limit,
+			orderBy: { created_at: sortBy },
+			include: {
+				donor: true,
+				requester: true,
 			},
-		},
-		include: {
-			donor: true,
-			requester: true,
-		},
-	});
+		}),
+		prisma.donation.count({ where }),
+	]);
 
 	if (!donationRequest) {
 		throw new AppError(404, "Donation requests not found.");
 	}
 
-	return donationRequest;
+	return {
+		donationRequest,
+		meta: {
+			total,
+			page,
+			limit,
+			totalPages: Math.ceil(total / limit),
+		}
+	};
 };
 
 const getDonationRequestDetailsService = async (

@@ -175,5 +175,5 @@ export const BookingController = {
 	deleteBookingController,
 	updateBookingStatusController,
 	getBookingRequestsController,
-	getBookingRequestsDetailsController,
+	getBookingRequestsDetailsController
 };

@@ -105,23 +105,50 @@ const registerUserService = async (payload: IRegisterUser, buffer?: Buffer) => {
 		},
 	});
 
-	const templatePath = path.join(
-		process.cwd(),
-		"src/app/templates/register-user-otp.ejs",
-	);
+	// const templatePath = path.join(
+	// 	process.cwd(),
+	// 	"src/app/templates/register-user-otp.ejs",
+	// );
 
-	const html = await ejs.renderFile(templatePath, {
-		userName: payload.name,
-		otp,
-		expTime: expTime / 60,
-	});
+	// const html = await ejs.renderFile(templatePath, {
+	// 	userName: payload.name,
+	// 	otp,
+	// 	expTime: expTime / 60,
+	// });
 
-	await transporter.sendMail({
-		from: config.SMTP_EMAIL_SENDER,
-		to: email,
-		subject: "Verify Your Account",
-		html,
-	});
+	// await transporter.sendMail({
+	// 	from: config.SMTP_EMAIL_SENDER,
+	// 	to: email,
+	// 	subject: "Verify Your Account",
+	// 	html,
+	// });
+
+	try {
+		const templatePath = path.join(
+			process.cwd(),
+			"src/app/templates/register-user-otp.ejs",
+		);
+
+		const html = await ejs.renderFile(templatePath, {
+			userName: payload.name,
+			otp,
+			expTime: expTime / 60,
+		});
+
+		await transporter.sendMail({
+			from: config.SMTP_EMAIL_SENDER,
+			to: email,
+			subject: "Verify Your Account",
+			html,
+		});
+	} catch (error: any) {
+		console.error("🚨 EMAIL SENDING FAILED 🚨", error);
+
+		// If email fails, we should probably delete the Redis data so they can try again
+		await redisClient.del([otpKey, payloadKey]);
+
+		throw new AppError(500, "Failed to send OTP email. Please try again later.");
+	}
 };
 
 const verifyEmailService = async (payload: IVerifyRegisterOtp) => {

@@ -532,5 +532,5 @@ export const BookingService = {
 	updateBookingStatusService,
 	getBookingRequestsService,
 	getBookingRequestsDetailsService,
-	updatePaymentStatusService,
+	updatePaymentStatusService
 };

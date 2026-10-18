@@ -140,6 +140,27 @@ const resetPasswordController = catchAsync(
 	},
 );
 
+const logoutController = catchAsync(async (req: Request, res: Response) => {
+	res.clearCookie("accessToken", {
+		httpOnly: true,
+		sameSite: config.NODE_ENV === "development" ? "lax" : "none",
+		secure: config.NODE_ENV === "development" ? false : true,
+	});
+
+	res.clearCookie("refreshToken", {
+		httpOnly: true,
+		sameSite: config.NODE_ENV === "development" ? "lax" : "none",
+		secure: config.NODE_ENV === "development" ? false : true,
+	});
+
+	sendResponse(res, {
+		statusCode: 200,
+		success: true,
+		message: "User logged out successfully.",
+		data: null,
+	});
+})
+
 export const AuthController = {
 	registerUserController,
 	verifyEmailController,
@@ -147,4 +168,5 @@ export const AuthController = {
 	refreshTokenController,
 	forgetPasswordController,
 	resetPasswordController,
+	logoutController
 };

@@ -173,6 +173,7 @@ const getMyServices = async (user: IUser, query: IServiceQuery) => {
 	const {
 		search,
 		service_category,
+		service_status,
 		sortBy = "desc",
 		sortByPrice,
 		rawPage = 1,
@@ -194,6 +195,10 @@ const getMyServices = async (user: IUser, query: IServiceQuery) => {
 
 	if (service_category) {
 		where.service_category = service_category;
+	}
+
+	if (service_status) {
+		where.service_status = service_status
 	}
 
 	const orderBy = sortByPrice ? { price: sortByPrice } : { created_at: sortBy };

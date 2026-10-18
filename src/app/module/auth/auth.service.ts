@@ -426,6 +426,8 @@ const resetPasswordService = async (payload: IResetPassword) => {
 	});
 };
 
+
+
 export const AuthServices = {
 	registerUserService,
 	verifyEmailService,

@@ -442,8 +442,10 @@ const updatePaymentStatusService = async (
 
 const getBookingRequestsService = async (
 	user: IUser,
-	query?: Record<string, unknown>,
+	query: IBookingQuery,
 ) => {
+	const { search, booking_status, payment_status, payment_via, sortBy = 'desc', page = 1, limit = 10 } = query
+
 	const hospitalProfile = await prisma.hospital.findUnique({
 		where: { user_id: user.userId },
 	});
@@ -454,24 +456,54 @@ const getBookingRequestsService = async (
 
 	const where: Record<string, unknown> = { hospital_id: hospitalProfile.id };
 
-	if (query?.booking_status) {
-		where.booking_status = query.booking_status;
+	if (booking_status) {
+		where.booking_status = booking_status;
 	}
 
-	if (query?.payment_status) {
-		where.payment_status = query.payment_status;
+	if (payment_status) {
+		where.payment_status = payment_status;
 	}
 
-	const page = Math.max(1, Number(query?.page) || 1);
-	const limit = Math.min(Math.max(1, Number(query?.limit) || 10), 100);
-	const skip = (page - 1) * limit;
+	if (payment_via) {
+		where.payment_via = payment_via
+	}
+
+	if (search?.trim()) {
+		const term = search.trim();
+
+		where.OR = [
+			{
+				emergency_location: {
+					contains: term,
+					mode: "insensitive",
+				},
+			},
+			{
+				patient_name: {
+					contains: term,
+					mode: "insensitive",
+				},
+			},
+			{
+				patient_number: {
+					contains: term,
+					mode: "insensitive",
+				},
+			},
+		];
+	}
+
+	const rawPage = Math.max(1, Number(page));
+	const rawLimit = Math.min(Math.max(1, Number(limit)), 100);
+
+	const skip = (rawPage - 1) * rawLimit;
 
 	const [bookings, total] = await Promise.all([
 		prisma.bookingService.findMany({
 			where,
 			skip,
-			take: limit,
-			orderBy: { created_at: "desc" },
+			take: rawLimit,
+			orderBy: { created_at: sortBy },
 		}),
 		prisma.bookingService.count({ where }),
 	]);
@@ -480,9 +512,9 @@ const getBookingRequestsService = async (
 		bookings,
 		meta: {
 			total,
-			page,
-			limit,
-			totalPages: Math.ceil(total / limit),
+			page: rawPage,
+			limit: rawLimit,
+			totalPages: Math.ceil(total / rawLimit),
 		},
 	};
 };

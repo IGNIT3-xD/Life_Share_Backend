@@ -98,6 +98,7 @@ const getAllService = async (query: IServiceQuery) => {
 
 	const where: Record<string, unknown> = {
 		service_status: "ACTIVE",
+		hospital: { hospital_status: 'VERIFIED' }
 	};
 
 	if (search) {

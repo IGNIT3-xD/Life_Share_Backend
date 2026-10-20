@@ -114,6 +114,7 @@ const updateHospitalProfileService = async (
 const getAllHospitalProfile = async (query: IHospitalQuery) => {
 	const {
 		hospital_status,
+		search,
 		sortBy = "desc",
 		rawLimit = 10,
 		rawPage = 1,
@@ -126,6 +127,15 @@ const getAllHospitalProfile = async (query: IHospitalQuery) => {
 
 	if (hospital_status) {
 		where.hospital_status = hospital_status;
+	}
+
+	if (search) {
+		where.OR = [
+			{ license_number: { contains: search, mode: 'insensitive' } },
+			{ user: { name: { contains: search, mode: 'insensitive' } } },
+			{ user: { phone: { contains: search, mode: 'insensitive' } } },
+			{ user: { email: { contains: search, mode: 'insensitive' } } }
+		]
 	}
 
 	const skip = (page - 1) * limit;

@@ -17,6 +17,7 @@ export interface IUpdateHospitalProfile {
 
 export interface IHospitalQuery {
 	hospital_status?: HospitalStatus;
+	search?: string;
 	sortBy?: SortOrder;
 	rawPage?: number;
 	rawLimit?: number;

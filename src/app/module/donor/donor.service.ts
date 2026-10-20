@@ -145,6 +145,7 @@ const getDonationRequestService = async (
 		urgency,
 		blood_group,
 		donationStatus,
+		search,
 		sortBy = "desc",
 		rawPage = 1,
 		rawLimit = 10,
@@ -164,6 +165,7 @@ const getDonationRequestService = async (
 	}
 
 	const requesterFilters: Record<string, unknown> = {};
+
 	if (urgency) {
 		requesterFilters.urgency = urgency;
 	}
@@ -172,6 +174,12 @@ const getDonationRequestService = async (
 	}
 	if (Object.keys(requesterFilters).length > 0) {
 		where.requester = requesterFilters;
+	}
+	if (search) {
+		where.OR = [
+			{ requester: { patientName: { contains: search, mode: 'insensitive' } } },
+			{ requester: { exact_location: { contains: search, mode: 'insensitive' } } },
+		]
 	}
 
 	const skip = (page - 1) * limit;

@@ -31,6 +31,7 @@ export interface IDonorQueryAdmin {
 }
 
 export interface IDonationAdmin {
+	search?: string;
 	urgency?: RequestUrgency;
 	donationStatus?: DonationStatus;
 	blood_group?: BloodGroup;

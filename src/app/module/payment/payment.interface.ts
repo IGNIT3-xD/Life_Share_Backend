@@ -9,6 +9,7 @@ export interface IPaymentQuery {
 	payment_status?: PaymentStatus;
 	payment_gateway?: PaymentVia;
 	sortBy?: SortOrder;
+	sortByAmount?: SortOrder;
 	rawLimit?: number;
 	rawPage?: number;
 }

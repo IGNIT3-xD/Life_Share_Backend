@@ -346,6 +346,7 @@ const getAllPayments = async (query: IPaymentQuery) => {
 		payment_status,
 		payment_gateway,
 		sortBy = "desc",
+		sortByAmount,
 		rawLimit = 10,
 		rawPage = 1,
 	} = query;
@@ -373,7 +374,7 @@ const getAllPayments = async (query: IPaymentQuery) => {
 
 	const skip = (page - 1) * limit;
 
-	const orderBy = { created_at: sortBy };
+	const orderBy = sortByAmount ? { payment_amount: sortByAmount } : { created_at: sortBy };
 
 	const [payment, total] = await Promise.all([
 		prisma.payment.findMany({

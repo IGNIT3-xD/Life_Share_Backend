@@ -23,4 +23,16 @@ analyticsRouter.get(
 	AnalyticsController.getMyAnalyticsController,
 );
 
+analyticsRouter.get(
+	"/donor",
+	auth(Role.DONOR, Role.USER),
+	AnalyticsController.getDonorAnalyticsController,
+);
+
+analyticsRouter.get(
+	"/hospital",
+	auth(Role.HOSPITAL),
+	AnalyticsController.getHospitalAnalyticsController,
+);
+
 export default analyticsRouter;

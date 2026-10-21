@@ -3,6 +3,7 @@ import {
 	DonationStatus,
 	PaymentStatus,
 	RequestStatus,
+	ServiceStatus,
 } from "../../../../prisma/generated/prisma/enums";
 import type { IUser } from "../auth/auth.interface";
 import { prisma } from "../../lib/prisma";
@@ -274,8 +275,242 @@ const userAnalyticsService = async (user: IUser) => {
 	};
 };
 
+const donorAnalyticsService = async (user: IUser) => {
+	const [
+		totalDonationReceived,
+		pendingDonations,
+		acceptedDonations,
+		scheduledDonations,
+		completedDonations,
+		donorCancelledDonations,
+		rejectedDonations,
+		totalBloodRequests,
+		pendingBloodRequests,
+		inProgressBloodRequests,
+		completedBloodRequests,
+		cancelledBloodRequests,
+		totalBookings,
+		pendingBookings,
+		acceptedBookings,
+		confirmedBookings,
+		cancelledBookings,
+	] = await prisma.$transaction([
+		// Donation requests received for this donor profile
+		prisma.donation.count({ where: { donor: { userId: user.userId } } }),
+		prisma.donation.count({
+			where: {
+				donor: { userId: user.userId },
+				donationStatus: DonationStatus.PENDING,
+			},
+		}),
+		prisma.donation.count({
+			where: {
+				donor: { userId: user.userId },
+				donationStatus: DonationStatus.ACCEPTED,
+			},
+		}),
+		prisma.donation.count({
+			where: {
+				donor: { userId: user.userId },
+				donationStatus: DonationStatus.SCHEDULED,
+			},
+		}),
+		prisma.donation.count({
+			where: {
+				donor: { userId: user.userId },
+				donationStatus: DonationStatus.COMPLETED,
+			},
+		}),
+		prisma.donation.count({
+			where: {
+				donor: { userId: user.userId },
+				donationStatus: DonationStatus.DONOR_CANCELLED,
+			},
+		}),
+		prisma.donation.count({
+			where: {
+				donor: { userId: user.userId },
+				donationStatus: DonationStatus.REJECTED,
+			},
+		}),
+		// Blood requests the donor themselves posted
+		prisma.requester.count({ where: { user_id: user.userId } }),
+		prisma.requester.count({
+			where: { user_id: user.userId, request_status: RequestStatus.PENDING },
+		}),
+		prisma.requester.count({
+			where: {
+				user_id: user.userId,
+				request_status: RequestStatus.IN_PROGRESS,
+			},
+		}),
+		prisma.requester.count({
+			where: { user_id: user.userId, request_status: RequestStatus.COMPLETED },
+		}),
+		prisma.requester.count({
+			where: { user_id: user.userId, request_status: RequestStatus.CANCELLED },
+		}),
+		// Emergency service bookings made by the donor
+		prisma.bookingService.count({ where: { user_id: user.userId } }),
+		prisma.bookingService.count({
+			where: { user_id: user.userId, booking_status: BookingStatus.PENDING },
+		}),
+		prisma.bookingService.count({
+			where: { user_id: user.userId, booking_status: BookingStatus.ACCEPTED },
+		}),
+		prisma.bookingService.count({
+			where: { user_id: user.userId, booking_status: BookingStatus.CONFIRMED },
+		}),
+		prisma.bookingService.count({
+			where: { user_id: user.userId, booking_status: BookingStatus.CANCELLED },
+		}),
+	]);
+
+	return {
+		donations: {
+			totalReceived: totalDonationReceived,
+			pending: pendingDonations,
+			accepted: acceptedDonations,
+			scheduled: scheduledDonations,
+			totalDonations: completedDonations,
+			donorCancelled: donorCancelledDonations,
+			rejected: rejectedDonations,
+		},
+		bloodRequests: {
+			total: totalBloodRequests,
+			pending: pendingBloodRequests,
+			inProgress: inProgressBloodRequests,
+			completed: completedBloodRequests,
+			cancelled: cancelledBloodRequests,
+		},
+		bookings: {
+			total: totalBookings,
+			pending: pendingBookings,
+			accepted: acceptedBookings,
+			confirmed: confirmedBookings,
+			cancelled: cancelledBookings,
+		},
+	};
+};
+
+const hospitalAnalyticsService = async (user: IUser) => {
+	const [
+		revenueStats,
+		refundStats,
+		totalBookingsReceived,
+		pendingBookings,
+		acceptedBookings,
+		confirmedBookings,
+		completedBookings,
+		cancelledBookings,
+		totalServices,
+		activeServices,
+		inProgressServices,
+		inactiveServices,
+	] = await prisma.$transaction([
+		// Revenue from payments on this hospital's services
+		prisma.payment.aggregate({
+			where: {
+				payment_status: PaymentStatus.PAID,
+				emergencyService: { hospital: { user_id: user.userId } },
+			},
+			_sum: { payment_amount: true },
+			_count: { id: true },
+		}),
+		prisma.payment.aggregate({
+			where: {
+				payment_status: PaymentStatus.REFUNDED,
+				emergencyService: { hospital: { user_id: user.userId } },
+			},
+			_sum: { refund_amount: true },
+			_count: { id: true },
+		}),
+		// Booking requests received for this hospital
+		prisma.bookingService.count({
+			where: { hospital: { user_id: user.userId } },
+		}),
+		prisma.bookingService.count({
+			where: {
+				hospital: { user_id: user.userId },
+				booking_status: BookingStatus.PENDING,
+			},
+		}),
+		prisma.bookingService.count({
+			where: {
+				hospital: { user_id: user.userId },
+				booking_status: BookingStatus.ACCEPTED,
+			},
+		}),
+		prisma.bookingService.count({
+			where: {
+				hospital: { user_id: user.userId },
+				booking_status: BookingStatus.CONFIRMED,
+			},
+		}),
+		prisma.bookingService.count({
+			where: {
+				hospital: { user_id: user.userId },
+				booking_status: BookingStatus.COMPLETED,
+			},
+		}),
+		prisma.bookingService.count({
+			where: {
+				hospital: { user_id: user.userId },
+				booking_status: BookingStatus.CANCELLED,
+			},
+		}),
+		// Emergency services offered by this hospital
+		prisma.emergencyService.count({
+			where: { hospital: { user_id: user.userId } },
+		}),
+		prisma.emergencyService.count({
+			where: {
+				hospital: { user_id: user.userId },
+				service_status: ServiceStatus.ACTIVE,
+			},
+		}),
+		prisma.emergencyService.count({
+			where: {
+				hospital: { user_id: user.userId },
+				service_status: ServiceStatus.IN_PROGRESS,
+			},
+		}),
+		prisma.emergencyService.count({
+			where: {
+				hospital: { user_id: user.userId },
+				service_status: ServiceStatus.INACTIVE,
+			},
+		}),
+	]);
+
+	return {
+		revenue: {
+			totalRevenue: Number(revenueStats._sum.payment_amount ?? 0),
+			totalTransactions: revenueStats._count.id ?? 0,
+			totalRefunded: Number(refundStats._sum.refund_amount ?? 0),
+			refundedTransactions: refundStats._count.id ?? 0,
+		},
+		bookings: {
+			totalReceived: totalBookingsReceived,
+			pending: pendingBookings,
+			accepted: acceptedBookings,
+			confirmed: confirmedBookings,
+			completed: completedBookings,
+			cancelled: cancelledBookings,
+		},
+		services: {
+			total: totalServices,
+			active: activeServices,
+			inProgress: inProgressServices,
+			inactive: inactiveServices,
+		},
+	};
+};
+
 export const AnalyticsServices = {
 	getAnalytics,
 	revenueMetricsService,
 	userAnalyticsService,
+	donorAnalyticsService,
+	hospitalAnalyticsService,
 };

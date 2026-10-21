@@ -41,8 +41,40 @@ const getMyAnalyticsController = catchAsync(
 	},
 );
 
+const getDonorAnalyticsController = catchAsync(
+	async (req: Request, res: Response) => {
+		const data = await AnalyticsServices.donorAnalyticsService(
+			req.user as IUser,
+		);
+
+		sendResponse(res, {
+			statusCode: 200,
+			success: true,
+			message: "Donor analytics retrieved successfully",
+			data,
+		});
+	},
+);
+
+const getHospitalAnalyticsController = catchAsync(
+	async (req: Request, res: Response) => {
+		const data = await AnalyticsServices.hospitalAnalyticsService(
+			req.user as IUser,
+		);
+
+		sendResponse(res, {
+			statusCode: 200,
+			success: true,
+			message: "Hospital analytics retrieved successfully",
+			data,
+		});
+	},
+);
+
 export const AnalyticsController = {
 	getAnalytics,
 	getRevenueMetrics,
 	getMyAnalyticsController,
+	getDonorAnalyticsController,
+	getHospitalAnalyticsController,
 };

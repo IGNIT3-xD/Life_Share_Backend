@@ -17,4 +17,10 @@ analyticsRouter.get(
 	AnalyticsController.getRevenueMetrics,
 );
 
+analyticsRouter.get(
+	"/me",
+	auth(Role.SUPER_ADMIN, Role.ADMIN, Role.DONOR, Role.HOSPITAL, Role.USER),
+	AnalyticsController.getMyAnalyticsController,
+);
+
 export default analyticsRouter;

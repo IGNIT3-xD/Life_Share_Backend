@@ -1,4 +1,10 @@
-import { PaymentStatus } from "../../../../prisma/generated/prisma/enums";
+import {
+	BookingStatus,
+	DonationStatus,
+	PaymentStatus,
+	RequestStatus,
+} from "../../../../prisma/generated/prisma/enums";
+import type { IUser } from "../auth/auth.interface";
 import { prisma } from "../../lib/prisma";
 
 const MONTH_NAMES = [
@@ -170,4 +176,106 @@ const revenueMetricsService = async () => {
 	};
 };
 
-export const AnalyticsServices = { getAnalytics, revenueMetricsService };
+const userAnalyticsService = async (user: IUser) => {
+	const [
+		paymentStats,
+		totalBloodRequests,
+		pendingBloodRequests,
+		inProgressBloodRequests,
+		completedBloodRequests,
+		cancelledBloodRequests,
+		receivedDonationRequests,
+		completedDonations,
+		totalBookings,
+		pendingBookings,
+		acceptedBookings,
+		confirmedBookings,
+		cancelledBookings,
+	] = await prisma.$transaction([
+		prisma.payment.aggregate({
+			where: {
+				user_id: user.userId,
+				payment_status: PaymentStatus.PAID,
+			},
+			_sum: { payment_amount: true },
+			_count: { id: true },
+		}),
+		prisma.requester.count({ where: { user_id: user.userId } }),
+		prisma.requester.count({
+			where: { user_id: user.userId, request_status: RequestStatus.PENDING },
+		}),
+		prisma.requester.count({
+			where: {
+				user_id: user.userId,
+				request_status: RequestStatus.IN_PROGRESS,
+			},
+		}),
+		prisma.requester.count({
+			where: {
+				user_id: user.userId,
+				request_status: RequestStatus.COMPLETED,
+			},
+		}),
+		prisma.requester.count({
+			where: {
+				user_id: user.userId,
+				request_status: RequestStatus.CANCELLED,
+			},
+		}),
+		// Blood donation requests received on the user's blood requests
+		prisma.donation.count({
+			where: { requester: { user_id: user.userId } },
+		}),
+		prisma.donation.count({
+			where: {
+				requester: { user_id: user.userId },
+				donationStatus: DonationStatus.COMPLETED,
+			},
+		}),
+		// Emergency service bookings made by the user
+		prisma.bookingService.count({ where: { user_id: user.userId } }),
+		prisma.bookingService.count({
+			where: { user_id: user.userId, booking_status: BookingStatus.PENDING },
+		}),
+		prisma.bookingService.count({
+			where: { user_id: user.userId, booking_status: BookingStatus.ACCEPTED },
+		}),
+		prisma.bookingService.count({
+			where: { user_id: user.userId, booking_status: BookingStatus.CONFIRMED },
+		}),
+		prisma.bookingService.count({
+			where: { user_id: user.userId, booking_status: BookingStatus.CANCELLED },
+		}),
+	]);
+
+	return {
+		payments: {
+			totalPaid: Number(paymentStats._sum.payment_amount ?? 0),
+			totalTransactions: paymentStats._count.id ?? 0,
+		},
+		bloodRequests: {
+			total: totalBloodRequests,
+			pending: pendingBloodRequests,
+			inProgress: inProgressBloodRequests,
+			completed: completedBloodRequests,
+			cancelled: cancelledBloodRequests,
+		},
+		donations: {
+			received: receivedDonationRequests,
+			completed: completedDonations,
+		},
+		bookings: {
+			total: totalBookings,
+			pending: pendingBookings,
+			accepted: acceptedBookings,
+			confirmed: confirmedBookings,
+			cancelled: cancelledBookings,
+		},
+	};
+};
+
+export const AnalyticsServices = {
+	getAnalytics,
+	revenueMetricsService,
+	userAnalyticsService,
+};

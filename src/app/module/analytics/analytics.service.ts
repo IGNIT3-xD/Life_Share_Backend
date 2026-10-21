@@ -1,4 +1,27 @@
+import { PaymentStatus } from "../../../../prisma/generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
+
+const MONTH_NAMES = [
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December",
+];
+
+interface IMonthlyRevenueRow {
+	year: number;
+	month: number;
+	revenue: number | null;
+	transactions: number;
+}
 
 const getAnalytics = async () => {
 	const [
@@ -77,4 +100,74 @@ const getAnalytics = async () => {
 	};
 };
 
-export const AnalyticsServices = { getAnalytics };
+const revenueMetricsService = async () => {
+	const now = new Date();
+	const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+
+	const [allTime, monthlyRows] = await Promise.all([
+		prisma.payment.aggregate({
+			where: { payment_status: PaymentStatus.PAID },
+			_sum: { payment_amount: true },
+			_count: { id: true },
+		}),
+		prisma.$queryRaw<IMonthlyRevenueRow[]>`
+			SELECT
+				EXTRACT(YEAR FROM created_at)::int AS year,
+				EXTRACT(MONTH FROM created_at)::int AS month,
+				SUM(payment_amount) AS revenue,
+				COUNT(*)::int AS transactions
+			FROM "payment"
+			WHERE payment_status = ${PaymentStatus.PAID}
+				AND created_at >= ${twelveMonthsAgo}
+			GROUP BY year, month
+			ORDER BY year, month
+		`,
+	]);
+
+	// Pre-fill the last 12 months (oldest → newest) so months without
+	// any PAID payment still show up with a zero revenue.
+	const monthly: {
+		month: string;
+		year: number;
+		revenue: number;
+		transactions: number;
+	}[] = [];
+
+	for (let i = 11; i >= 0; i--) {
+		const bucketDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+
+		monthly.push({
+			month: MONTH_NAMES[bucketDate.getMonth()],
+			year: bucketDate.getFullYear(),
+			revenue: 0,
+			transactions: 0,
+		});
+	}
+
+	for (const row of monthlyRows) {
+		const bucketIndex =
+			(row.year - now.getFullYear()) * 12 +
+			(row.month - 1 - now.getMonth()) +
+			11;
+
+		if (bucketIndex < 0 || bucketIndex > 11) {
+			continue;
+		}
+
+		monthly[bucketIndex].revenue = Number(row.revenue ?? 0);
+		monthly[bucketIndex].transactions = Number(row.transactions ?? 0);
+	}
+
+	const thisMonth = monthly[11];
+	const lastMonth = monthly[10];
+
+	return {
+		totalRevenue: Number(allTime._sum.payment_amount ?? 0),
+		totalTransactions: allTime._count.id ?? 0,
+		thisMonth,
+		lastMonth,
+		monthly,
+	};
+};
+
+export const AnalyticsServices = { getAnalytics, revenueMetricsService };

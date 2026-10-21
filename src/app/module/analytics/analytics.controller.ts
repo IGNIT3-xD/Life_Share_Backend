@@ -14,4 +14,15 @@ const getAnalytics = catchAsync(async (_req: Request, res: Response) => {
 	});
 });
 
-export const AnalyticsController = { getAnalytics };
+const getRevenueMetrics = catchAsync(async (_req: Request, res: Response) => {
+	const data = await AnalyticsServices.revenueMetricsService();
+
+	sendResponse(res, {
+		statusCode: 200,
+		success: true,
+		message: "Analytics retrieved successfully",
+		data,
+	});
+});
+
+export const AnalyticsController = { getAnalytics, getRevenueMetrics };

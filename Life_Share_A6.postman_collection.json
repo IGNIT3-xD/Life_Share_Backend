@@ -1,0 +1,2503 @@
+{
+  "info": {
+    "_postman_id": "53573994-ac86-4026-a958-830e393525b7",
+    "name": "Life_Share_A6",
+    "description": "## Life_Share_A6 — API Collection\n\n**Life_Share_A6** is a comprehensive REST API collection for a life-sharing and emergency health services platform. It covers the full lifecycle of user interactions — from authentication and profile management to blood donation coordination, hospital bookings, emergency services, and payments.\n\n### Modules\n\n| Folder | Description |\n|---|---|\n| **Auth** | User registration, email verification, login, password reset via OTP, and refresh token generation. |\n| **User** | Fetch the authenticated user's profile, update personal details, submit blood requests, and view all requesters. |\n| **Donor** | Create, retrieve, update, and delete donor profiles; browse all registered donors and view individual donor details. |\n| **Donation** | Manage the full donation request lifecycle — create requests, track statuses, view received requests, and allow donors to accept or decline. |\n| **Hospital** | Register and manage hospital profiles, handle booking requests from users, and update booking statuses. |\n| **Emergency Service** | Create and manage emergency service listings; browse all available services and retrieve service details. |\n| **Booking Emergency Service** | Book emergency services, view and manage personal bookings, update booking details, and cancel or delete bookings. |\n| **Payment** | Initiate payments, retrieve personal and hospital payment records, view payment details, and update payment statuses. |\n| **Admin Controlled** | Administrative endpoints for overseeing all users, donors, requesters, hospitals, services, payments, and requests — including status updates and deletions. Super Admin access required for user deletion. |\n| **Analytics** | Retrieve aggregated platform analytics for admin dashboards. |\n\n### Authentication\nMost endpoints require a Bearer token obtained through the **Login** or **Generate Refresh Token** requests in the Auth folder.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55121364",
+    "_collection_link": "https://go.postman.co/collection/55121364-53573994-ac86-4026-a958-830e393525b7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Registration",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Test",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "mateusz.pacey@dropoffs.org",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "#Test12",
+                  "type": "text"
+                },
+                {
+                  "key": "gender",
+                  "value": "MALE",
+                  "type": "text"
+                },
+                {
+                  "key": "profile_pic",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/mdimr/OneDrive/Pictures/memes/Ambulence.jpg"
+                  ],
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "USER",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "phone",
+                  "value": "018844412345",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "address",
+                  "value": "Your Location",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/auth/register",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"c02tu4@airmailbox.website\",\n  \"otp\": \"615343\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/auth/verify-email",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "verify-email"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    // \"email\": \"user.life-share@dropoffs.org\",\n    // \"password\": \"#Test02\"\n    // \"email\": \"mateusz.pacey@dropoffs.org\",\n    // \"password\": \"#Test02\"\n    \"email\": \"33zd0r@givememail.club\",\n    \"password\": \"#Test02\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/auth/login",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forget Password OTP",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user.life-share@dropoffs.org\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/auth/forget-password",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "forget-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"example_email@gmail.com\",\n  \"otp\": \"493330\",\n  \"newPassword\": \"New Password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/auth/reset-password",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/auth/refresh-token",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh-token"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Me",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/me",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "phone",
+                  "value": "01912345678",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "address",
+                  "value": "Narayanganj 1421, Dhaka, Bangladesh ",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "FEMALE",
+                  "type": "text"
+                },
+                {
+                  "key": "profile_pic",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/mdimr/OneDrive/Pictures/memes/cat.jpg"
+                  ],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/update-profile",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "update-profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Blood Request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"patientName\": \"Al Hasan\",\n    \"blood_group\": \"O_POS\",\n    \"unit_required\": 12,\n    \"exact_location\": \"BSMMCH, 1no. gate, 4th floor.\",\n    \"expires_at\": \"2026-09-10 23:00\",\n    \"urgency\": \"HIGH\",\n    \"note\": \"Bike accident. Need blood urgently. If need money will be paid\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/blood-request",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "blood-request"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Requester",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/requester",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "requester"
+              ],
+              "query": [
+                {
+                  "key": "urgency",
+                  "value": "HIGH",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Imran",
+                  "disabled": true
+                },
+                {
+                  "key": "blood_group",
+                  "value": "A_POS",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Donor",
+      "item": [
+        {
+          "name": "Create Donor Profile",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"age\": 30,\n  \"blood_group\": \"O_POS\",\n  \"location\": \"Dhaka\",\n  \"height\": 162,\n  \"weightKg\": 60,\n  \"availability\": \"AVAILABLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor/create-donor-profile",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "create-donor-profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Donor Profile",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor/my-donor-profile",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "my-donor-profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Donor",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor?sortBy=asc",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor"
+              ],
+              "query": [
+                {
+                  "key": "blood_group",
+                  "value": "AB_POS",
+                  "disabled": true
+                },
+                {
+                  "key": "location",
+                  "value": "anywhere",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "asc"
+                },
+                {
+                  "key": "availability",
+                  "value": "UNAVAILABLE",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Donor Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor/donor-profile/f7a78972-d614-4170-b28a-8dd7f1b07cc1",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "donor-profile",
+                "f7a78972-d614-4170-b28a-8dd7f1b07cc1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Donor Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"availability\": \"AVAILABLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor/donor-profile",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "donor-profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Donor Profile",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor/donor-profile/65de081e-c239-4c8f-85ca-1b39a5b47994",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "donor-profile",
+                "65de081e-c239-4c8f-85ca-1b39a5b47994"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Donation",
+      "item": [
+        {
+          "name": "Create Donation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requester_id\": \"ba9c8c13-8758-47de-804b-668a83fa551c\",\n  \"donor_id\": \"65de081e-c239-4c8f-85ca-1b39a5b47994\",\n  \"scheduled_at\": \"2026-09-11\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donation/request",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donation",
+                "request"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Recevied All Donation Request By Requesters",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor/donation-request",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "donation-request"
+              ],
+              "query": [
+                {
+                  "key": "donationStatus",
+                  "value": "ACCEPTED",
+                  "disabled": true
+                },
+                {
+                  "key": "urgency",
+                  "value": "MEDIUM",
+                  "disabled": true
+                },
+                {
+                  "key": "blood_group",
+                  "value": "AB_POS",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Donation Requests",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donation/my-requests",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donation",
+                "my-requests"
+              ],
+              "query": [
+                {
+                  "key": "blood_group",
+                  "value": "B_POS",
+                  "disabled": true
+                },
+                {
+                  "key": "donationStatus",
+                  "value": "PENDING",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "daffd",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "desc",
+                  "disabled": true
+                },
+                {
+                  "key": "rawLimit",
+                  "value": "1",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Donation Request Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donation/my-request/320d2a83-10b5-42f4-829f-c1cd1d3f9669",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donation",
+                "my-request",
+                "320d2a83-10b5-42f4-829f-c1cd1d3f9669"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Donation Request Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor/donation-request/320d2a83-10b5-42f4-829f-c1cd1d3f9669",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "donation-request",
+                "320d2a83-10b5-42f4-829f-c1cd1d3f9669"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Donation Request Details",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n//   \"unit_required\": 15,\n//   \"exact_location\": \"PG Hospital, Gate no. 1, 1st floor. Call me at 0123456789\",\n  \"urgency\": \"EMERGENCY\"\n//   \"note\": \"Highly needed Ab- donor. I am ready to pay.\"\n//   \"request_status\": \"PENDING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/update-my-request/0d84a715-90aa-4d5e-a6d0-9c39b1fbfabd",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "update-my-request",
+                "0d84a715-90aa-4d5e-a6d0-9c39b1fbfabd"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete My Requests",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/delete-my-request/0d84a715-90aa-4d5e-a6d0-9c39b1fbfabd",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "delete-my-request",
+                "0d84a715-90aa-4d5e-a6d0-9c39b1fbfabd"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Donation Request Status By Donor",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"donationStatus\": \"COMPLETED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor/donation-request/0d84a715-90aa-4d5e-a6d0-9c39b1fbfabd",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "donation-request",
+                "0d84a715-90aa-4d5e-a6d0-9c39b1fbfabd"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Hospital",
+      "item": [
+        {
+          "name": "Create Hospital Profile",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"license_number\": \"TEST260907\",\n  \"description\": \"This is DTM. Dhaka test Medical. We are the private medical at Dhaka. We provide blood bank and emergency services,\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/hospital/create-hospital-profile",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "hospital",
+                "create-hospital-profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Hospital Profile",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/hospital/my-hospital-profile",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "hospital",
+                "my-hospital-profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Hospital Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hospital_name\": \"Dhaka Test Medical College\",\n  //   \"hospital_address\": \"\",\n  //   \"hospital_phone\": \"\",\n  //   \"license_numbe\": \"\",\n  \"description\": \"This is DTMC (Dhaka Test Medical College). We are the private medical at Dhaka. We provide blood bank and emergency services.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/hospital/update-hospital-profile",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "hospital",
+                "update-hospital-profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Booking Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service-booking/recevied-booking-request",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service-booking",
+                "recevied-booking-request"
+              ],
+              "query": [
+                {
+                  "key": "booking_status",
+                  "value": "ACCEPTED",
+                  "disabled": true
+                },
+                {
+                  "key": "payment_status",
+                  "value": "PAID",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Booking Request Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service-booking/booking-request/9baa54e5-37b2-464d-8ca2-2c6a86c3e6a4",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service-booking",
+                "booking-request",
+                "9baa54e5-37b2-464d-8ca2-2c6a86c3e6a4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Booking Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"booking_status\": \"ACCEPTED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service-booking/booking-request/6c2d3271-11ef-4973-8e75-46bf560e6e56",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service-booking",
+                "booking-request",
+                "6c2d3271-11ef-4973-8e75-46bf560e6e56"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Hospital Profile",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/hospital/hospital-profile/7eb8599f-d244-49e4-bca4-7e7dc2dfd228",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "hospital",
+                "hospital-profile",
+                "7eb8599f-d244-49e4-bca4-7e7dc2dfd228"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Emergency Service",
+      "item": [
+        {
+          "name": "Create Emergency Service",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "service_name",
+                  "value": "Emergency Ambulance Service",
+                  "type": "text"
+                },
+                {
+                  "key": "service_category",
+                  "value": "EMERGENCY_AMBULANCE",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "24/7 emergency ambulance service with trained medical staff.",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "3000",
+                  "type": "text"
+                },
+                {
+                  "key": "availability",
+                  "value": "24/7",
+                  "type": "text"
+                },
+                {
+                  "key": "service_image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/mdimr/OneDrive/Pictures/memes/271656891_665761001111725_7314228126329186905_n.jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service/create-service",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service",
+                "create-service"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Services",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service/my-services",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service",
+                "my-services"
+              ],
+              "query": [
+                {
+                  "key": "service_category",
+                  "value": "OTHER",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Ambulance",
+                  "disabled": true
+                },
+                {
+                  "key": "sortByPrice",
+                  "value": "asc",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Services",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service"
+              ],
+              "query": [
+                {
+                  "key": "service_category",
+                  "value": "EMERGENCY_AMBULANCE",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "ll",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "asc",
+                  "disabled": true
+                },
+                {
+                  "key": "sortByPrice",
+                  "value": "desc",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Service Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service/0e9cc7c7-ceb6-4054-a2ce-3b4390cf8f1a",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service",
+                "0e9cc7c7-ceb6-4054-a2ce-3b4390cf8f1a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Emergency Service",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "service_name",
+                  "value": "Frezing van for dead body",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "service_category",
+                  "value": "OTHER",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "Frezing van for dead body........................",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "price",
+                  "value": "4000",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "availability",
+                  "value": "24/7",
+                  "type": "text"
+                },
+                {
+                  "key": "service_image",
+                  "type": "file",
+                  "src": [
+                    "C:\\Users\\mdimr\\OneDrive\\Pictures\\memes\\271656891_665761001111725_7314228126329186905_n.jpg"
+                  ],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service/update-service/c1ebba74-2e62-44f8-906d-7211136f7cc9",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service",
+                "update-service",
+                "c1ebba74-2e62-44f8-906d-7211136f7cc9"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete My Emergency Service",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service/my-service/c1ebba74-2e62-44f8-906d-",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service",
+                "my-service",
+                "c1ebba74-2e62-44f8-906d-"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Booking Emergency Service",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patient_name\": \"Al Hasan\",\n  \"patient_number\": \"+88012345678\",\n  \"payment_via\": \"BKASH\",\n  \"emergency_location\": \"BSMMCH, Room 402, 18F, Dhaka, Bangladesh\",\n  \"description\": \"Patient had a bike acciden. Requires immediate critical emergency support.\",\n  \"scheduled_at\": \"2026-09-11T14:30:00.000Z\",\n  \"note\": \"Please ensure oxygen cylinder apparatus is available inside the transport unit.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service-booking/booking-request/0e9cc7c7-ceb6-4054-a2ce-3b4390cf8f1a",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service-booking",
+                "booking-request",
+                "0e9cc7c7-ceb6-4054-a2ce-3b4390cf8f1a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Bookings",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service-booking/my-booking-request",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service-booking",
+                "my-booking-request"
+              ],
+              "query": [
+                {
+                  "key": "booking_status",
+                  "value": "ACCEPTED",
+                  "disabled": true
+                },
+                {
+                  "key": "payment_status",
+                  "value": "PAID",
+                  "disabled": true
+                },
+                {
+                  "key": "payment_via",
+                  "value": "BKASH",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "desc",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "karim",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "2",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Booking Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service-booking/booking-request/e6d43aad-3354-4887-99d8-c634e6a983e3",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service-booking",
+                "booking-request",
+                "e6d43aad-3354-4887-99d8-c634e6a983e3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Booking Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service-booking/my-booking-details/e6d43aad-3354-4887-99d8-c634e6a983e3",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service-booking",
+                "my-booking-details",
+                "e6d43aad-3354-4887-99d8-c634e6a983e3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Booking",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n//   \"patient_name\": \"John Done\",\n    \"patient_number\": \"+880188224455\"\n//   \"emergency_location\": \"Square Hospital, Room 422, 18F, Dhaka, Bangladesh\"\n  //   \"description\": \"Patient experiencing severe chest pain and short breathing. Requires immediate critical emergency support.\",\n  //   \"scheduled_at\": \"2026-09-08T14:30:00.000Z\",\n  //   \"note\": \"Please ensure oxygen cylinder apparatus is available inside the transport unit.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service-booking/update-booking-request/9baa54e5-37b2-464d-8ca2-2c6a86c3e6a4",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service-booking",
+                "update-booking-request",
+                "9baa54e5-37b2-464d-8ca2-2c6a86c3e6a4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service-booking/cancel-booking-request/6c2d3271-11ef-4973-8e75-46bf560e6e56",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service-booking",
+                "cancel-booking-request",
+                "6c2d3271-11ef-4973-8e75-46bf560e6e56"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Booking",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service-booking/delete-booking-request/cd314ccb-b42a-4c2e-afe7-fe270c777b8b",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service-booking",
+                "delete-booking-request",
+                "cd314ccb-b42a-4c2e-afe7-fe270c777b8b"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payment",
+      "item": [
+        {
+          "name": "Create Payment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/payment/e6d43aad-3354-4887-99d8-c634e6a983e3",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payment",
+                "e6d43aad-3354-4887-99d8-c634e6a983e3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Payments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/payment/my-payments",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payment",
+                "my-payments"
+              ],
+              "query": [
+                {
+                  "key": "payment_status",
+                  "value": "PENDING",
+                  "disabled": true
+                },
+                {
+                  "key": "payment_gateway",
+                  "value": "ON_HAND",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Hospital Payments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/payment/hospital-payments",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payment",
+                "hospital-payments"
+              ],
+              "query": [
+                {
+                  "key": "payment_status",
+                  "value": "PENDING",
+                  "disabled": true
+                },
+                {
+                  "key": "payment_gateway",
+                  "value": "ON_HAND",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Payment Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/payment/e824de38-f889-4cab-a7e6-57fc408e8324",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payment",
+                "e824de38-f889-4cab-a7e6-57fc408e8324"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Payment Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"payment_status\": \"REFUNDED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/payment/hospital-payments/e824de38-f889-4cab-a7e6-57fc408e8324",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payment",
+                "hospital-payments",
+                "e824de38-f889-4cab-a7e6-57fc408e8324"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin Controlled",
+      "item": [
+        {
+          "name": "Get All Donors",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/donor/admin",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "admin"
+              ],
+              "query": [
+                {
+                  "key": "donorStatus",
+                  "value": "IN_PROGRESS",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "asc",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Requesters",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/all-requesters?verificationStatus=PENDING",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "all-requesters"
+              ],
+              "query": [
+                {
+                  "key": "urgency",
+                  "value": "HIGH",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Imran",
+                  "disabled": true
+                },
+                {
+                  "key": "blood_group",
+                  "value": "A_POS",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "verificationStatus",
+                  "value": "PENDING"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Requests Details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/request/ba9c8c13-8758-47de-804b-668a83fa551c",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "request",
+                "ba9c8c13-8758-47de-804b-668a83fa551c"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Hospital Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/hospital/all-hospital-profile",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "hospital",
+                "all-hospital-profile"
+              ],
+              "query": [
+                {
+                  "key": "hospital_status",
+                  "value": "IN_PROGRESS",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "desc",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Hospital Profile Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/hospital/hospital-profile/7eb8599f-d244-49e4-bca4-7e7dc2dfd228",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "hospital",
+                "hospital-profile",
+                "7eb8599f-d244-49e4-bca4-7e7dc2dfd228"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Services",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service/admin",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service",
+                "admin"
+              ],
+              "query": [
+                {
+                  "key": "service_category",
+                  "value": "EMERGENCY_AMBULANCE",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "ll",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "asc",
+                  "disabled": true
+                },
+                {
+                  "key": "sortByPrice",
+                  "value": "desc",
+                  "disabled": true
+                },
+                {
+                  "key": "service_status",
+                  "value": "IN_PROGRESS",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/all-users",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "all-users"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "Test",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "33zd0r@givememail.club",
+                  "disabled": true
+                },
+                {
+                  "key": "phone",
+                  "value": "null",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "ADMIN",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "OTHERS",
+                  "disabled": true
+                },
+                {
+                  "key": "is_active",
+                  "value": "false",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "asc",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Payments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/payment?search=andriy.fin@dropoffs.org?payment_status=PENDING&sortByAmount=asc&search=andriy.fin@dropoffs.org",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payment"
+              ],
+              "query": [
+                {
+                  "key": "payment_status",
+                  "value": "PENDING"
+                },
+                {
+                  "key": "sortByAmount",
+                  "value": "asc"
+                },
+                {
+                  "key": "search",
+                  "value": "andriy.fin@dropoffs.org"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/payment/3c2c8712-3d89-4b57-b387-19a6dcdaaeb4",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payment",
+                "3c2c8712-3d89-4b57-b387-19a6dcdaaeb4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/b9e1aeec-4280-46d8-8a94-9fc35ee5bf0a",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "b9e1aeec-4280-46d8-8a94-9fc35ee5bf0a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Requester Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"verificationStatus\": \"VERIFIED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/requester/ba9c8c13-8758-47de-804b-668a83fa551c",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "requester",
+                "ba9c8c13-8758-47de-804b-668a83fa551c"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Donor Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"donorStatus\": \"VERIFIED\"\n    //   \"donorStatus\": \"NOT_ELIGIBLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor/donor-profile-status/721c4a1c-4ec2-4328-9139-7664586d40b0",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "donor-profile-status",
+                "721c4a1c-4ec2-4328-9139-7664586d40b0"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Hospital Profile Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hospital_status\": \"VERIFIED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/hospital/hospital-profile/7eb8599f-d244-49e4-bca4-7e7dc2dfd228",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "hospital",
+                "hospital-profile",
+                "7eb8599f-d244-49e4-bca4-7e7dc2dfd228"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Services Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"service_status\": \"ACTIVE\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service/update-service-status/0e9cc7c7-ceb6-4054-a2ce-3b4390cf8f1a",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service",
+                "update-service-status",
+                "0e9cc7c7-ceb6-4054-a2ce-3b4390cf8f1a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Request",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/delete-my-request/54db2d90-2181-4fe3-afac-7fa4d3d61d3a",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "delete-my-request",
+                "54db2d90-2181-4fe3-afac-7fa4d3d61d3a"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Emergency Service",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/emergency-service/my-service/c1ebba74-2e62-44f8-906d-72111",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "emergency-service",
+                "my-service",
+                "c1ebba74-2e62-44f8-906d-72111"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Hospital Profile",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/hospital/hospital-profile/7eb8599f-d244-49e4-bca4-7e7dc2df",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "hospital",
+                "hospital-profile",
+                "7eb8599f-d244-49e4-bca4-7e7dc2df"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Donor Profile",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/donor/donor-profile/id?age=",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "donor",
+                "donor-profile",
+                "id"
+              ],
+              "query": [
+                {
+                  "key": "age",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "(Super Admin Only) Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{link}}/api/v1/user/b9e1aeec-4280-46d8-8a94-9fc35ee5bf0a?name=Test&email=33zd0r@givememail.club&phone=018844412345&role=ADMIN&gender=OTHERS&is_active=false&sortBy=asc",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "b9e1aeec-4280-46d8-8a94-9fc35ee5bf0a"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "Test"
+                },
+                {
+                  "key": "email",
+                  "value": "33zd0r@givememail.club"
+                },
+                {
+                  "key": "phone",
+                  "value": "018844412345"
+                },
+                {
+                  "key": "role",
+                  "value": "ADMIN"
+                },
+                {
+                  "key": "gender",
+                  "value": "OTHERS"
+                },
+                {
+                  "key": "is_active",
+                  "value": "false"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "asc"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get All Admin Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{link}}/api/v1/analytics",
+              "host": [
+                "{{link}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "link",
+      "value": ""
+    }
+  ]
+}
